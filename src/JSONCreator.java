@@ -1,4 +1,6 @@
-import org.json.JSONObject;
+
+
+import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -15,7 +17,7 @@ public class JSONCreator {
         object.put("id", id);
         File file = new File("theking/answer.json");
         FileWriter writer = new FileWriter(file);
-        writer.write(object.toString());
+        writer.write(object.toJSONString());
         writer.flush();
         writer.close();
         return file;
@@ -26,13 +28,14 @@ public class JSONCreator {
         object.put("error", error);
         File file = new File("theking/answer.json");
         FileWriter writer = new FileWriter(file);
-        writer.write(object.toString());
+        writer.write(object.toJSONString());
         writer.flush();
         writer.close();
         return file;
     }
 
     public File getGeneralData(Room room, int userCode, boolean error) throws Exception{
+        object.put("id", room.id);
         object.put("error", error);
         object.put("start", room.isGameStarted);
         object.put("usersCount", room.users.size());
@@ -47,7 +50,7 @@ public class JSONCreator {
         object.put("foodStatus", room.users.get(userCode).country.foodStatus);
         File file = new File("theking/answer.json");
         FileWriter writer = new FileWriter(file);
-        writer.write(object.toString());
+        writer.write(object.toJSONString());
         writer.flush();
         writer.close();
         return file;
@@ -58,7 +61,7 @@ public class JSONCreator {
         object.put("start", start);
         File file = new File("theking/answer.json");
         FileWriter writer = new FileWriter(file);
-        writer.write(object.toString());
+        writer.write(object.toJSONString());
         writer.flush();
         writer.close();
         return file;
@@ -68,7 +71,7 @@ public class JSONCreator {
         object.put("error", false);
         File file = new File("theking/answer.json");
         FileWriter writer = new FileWriter(file);
-        writer.write(object.toString());
+        writer.write(object.toJSONString());
         writer.flush();
         writer.close();
         return file;
@@ -78,7 +81,7 @@ public class JSONCreator {
         object.put("error", true);
         File file = new File("theking/answer.json");
         FileWriter writer = new FileWriter(file);
-        writer.write(object.toString());
+        writer.write(object.toJSONString());
         writer.flush();
         writer.close();
         return file;

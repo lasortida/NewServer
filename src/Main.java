@@ -1,7 +1,9 @@
+
+import org.json.simple.JSONObject;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class Main {
     static GameServer gameServer;
@@ -20,57 +22,82 @@ public class Main {
                     try{
                         String header = in.readLine();
                         System.out.println(header);
-                        String query = header.split(" ")[1].substring(1);
-                        if (query.startsWith("theking")){
-                            String[] queries = query.split("/");
-                            if (queries.length <= 1){
-                                sendIdOfRoom(print);
-                            }
-                            if (queries.length == 2){
-                                query = queries[1];
-                                if (query.startsWith("room")){
-                                    queries = query.substring(5).split("&");
-                                    if (queries.length <= 1){
-                                        String idOfRoom = query.substring(8);
-                                        addUserAndGetCode(idOfRoom, print);
-                                    }
-                                    if (queries.length == 2){
-                                        String idOfRoom = query.substring(8, 14);
-                                        int userCode = Integer.parseInt(queries[1].substring(10));
-                                        getStartStatus(idOfRoom, userCode, print);
-                                    }
-                                    if (queries.length == 3){
-                                        String idOfRoom = query.substring(8, 14);
-                                        int userCode = Integer.parseInt(queries[1].substring(10));
-                                        String userName = queries[2].substring(10);
-                                        setUserName(idOfRoom, userCode, userName, print);
-                                    }
-                                }
-                                if (query.startsWith("start")){
-                                    queries = query.substring(6).split("&");
-                                    if (queries.length == 2){
-                                        String idOfRoom = query.substring(9, 15);
-                                        int userCode = Integer.parseInt(queries[1].substring(10));
-                                        getRoomInform(idOfRoom, userCode, print);
-                                    }
-                                }
-                            }
-                        }
-                        else if (query.startsWith("docs")){
-                            FileCreator creator = new FileCreator();
-                            File file = creator.createDocFile(gameServer);
-                            sendFile(file, print, "html", false);
-                        }
-                        else if (query.startsWith("data")){
-                            String[] queries = query.substring(5).split("&");
+                        if (header.startsWith("POST")){
+                            String query = header.split(" ")[1].substring(1);
+                            String[] queries = query.split("/")[1].substring(5).split("&");
                             String idOfRoom = queries[0].substring(3);
-                            //
+                            int userCode = Integer.parseInt(queries[1].substring(10));
+                            int length = 0;
+                            String row = "";
+                            while (!(row = in.readLine()).equals("")){
+                                if (row.startsWith("Content-Length: ")){
+                                    length = Integer.parseInt(row.substring(16));
+                                }
+                            }
+                            StringBuilder body = new StringBuilder();
+                            for (int i = 0; i < length; ++i){
+                                int c = in.read();
+                                body.append((char)c);
+                            }
+                            String bd = body.toString();
+                            bd = bd.replaceAll("%20", " ");
+                            bd = bd.replaceAll("%7B", "{");
+                            bd = bd.replaceAll("%7D", "}");
+                            postToServer(idOfRoom, userCode, print, bd.substring(5));
                         }
-                        else{
-                            FileCreator creator = new FileCreator(header);
-                            File file = creator.createFile();
-                            String type = creator.getType();
-                            sendFile(file, print, type, creator.isError());
+                        else {
+                            String query = header.split(" ")[1].substring(1);
+                            if (query.startsWith("theking")){
+                                String[] queries = query.split("/");
+                                if (queries.length <= 1){
+                                    sendIdOfRoom(print);
+                                }
+                                if (queries.length == 2){
+                                    query = queries[1];
+                                    if (query.startsWith("room")){
+                                        queries = query.substring(5).split("&");
+                                        if (queries.length <= 1){
+                                            String idOfRoom = query.substring(8);
+                                            addUserAndGetCode(idOfRoom, print);
+                                        }
+                                        if (queries.length == 2){
+                                            String idOfRoom = query.substring(8, 14);
+                                            int userCode = Integer.parseInt(queries[1].substring(10));
+                                            getStartStatus(idOfRoom, userCode, print);
+                                        }
+                                        if (queries.length == 3){
+                                            String idOfRoom = query.substring(8, 14);
+                                            int userCode = Integer.parseInt(queries[1].substring(10));
+                                            String userName = queries[2].substring(10);
+                                            setUserName(idOfRoom, userCode, userName, print);
+                                        }
+                                    }
+                                    if (query.startsWith("start")){
+                                        queries = query.substring(6).split("&");
+                                        if (queries.length == 2){
+                                            String idOfRoom = query.substring(9, 15);
+                                            int userCode = Integer.parseInt(queries[1].substring(10));
+                                            getRoomInform(idOfRoom, userCode, print);
+                                        }
+                                    }
+                                }
+                            }
+                            else if (query.startsWith("docs")){
+                                FileCreator creator = new FileCreator();
+                                File file = creator.createDocFile(gameServer);
+                                sendFile(file, print, "html", false);
+                            }
+                            else if (query.startsWith("data")){
+                                String[] queries = query.substring(5).split("&");
+                                String idOfRoom = queries[0].substring(3);
+                                //
+                            }
+                            else{
+                                FileCreator creator = new FileCreator(header);
+                                File file = creator.createFile();
+                                String type = creator.getType();
+                                sendFile(file, print, type, creator.isError());
+                            }
                         }
                     } catch (Exception e){
                         e.printStackTrace();
@@ -87,6 +114,24 @@ public class Main {
             }
         } catch (Exception e){
             System.out.println("main");
+            e.printStackTrace();
+        }
+    }
+
+    public static void postToServer(String idOfRoom, int userCode, PrintStream print, String json){
+        JSONCreator creator = new JSONCreator();
+        try{
+            if (gameServer.isRightId(idOfRoom) && userCode < gameServer.getRoom(idOfRoom).users.size()){
+                // Обработка поста
+                File file = creator.getOK();
+                sendFile(file, print, "json", false);
+            }
+            else{
+                File file = creator.getError();
+                sendFile(file, print, "json", false);
+            }
+        } catch (Exception e){
+            System.out.println("postToServer");
             e.printStackTrace();
         }
     }
