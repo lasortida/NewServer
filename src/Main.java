@@ -61,6 +61,11 @@ public class Main {
                             File file = creator.createDocFile(gameServer);
                             sendFile(file, print, "html", false);
                         }
+                        else if (query.startsWith("data")){
+                            String[] queries = query.substring(5).split("&");
+                            String idOfRoom = queries[0].substring(3);
+                            //
+                        }
                         else{
                             FileCreator creator = new FileCreator(header);
                             File file = creator.createFile();
