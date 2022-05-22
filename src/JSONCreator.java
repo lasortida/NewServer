@@ -1,6 +1,5 @@
 
-
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -17,7 +16,7 @@ public class JSONCreator {
         object.put("id", id);
         File file = new File("theking/answer.json");
         FileWriter writer = new FileWriter(file);
-        writer.write(object.toJSONString());
+        writer.write(object.toString());
         writer.flush();
         writer.close();
         return file;
@@ -28,7 +27,7 @@ public class JSONCreator {
         object.put("error", error);
         File file = new File("theking/answer.json");
         FileWriter writer = new FileWriter(file);
-        writer.write(object.toJSONString());
+        writer.write(object.toString());
         writer.flush();
         writer.close();
         return file;
@@ -50,7 +49,7 @@ public class JSONCreator {
         object.put("foodStatus", room.users.get(userCode).country.foodStatus);
         File file = new File("theking/answer.json");
         FileWriter writer = new FileWriter(file);
-        writer.write(object.toJSONString());
+        writer.write(object.toString());
         writer.flush();
         writer.close();
         return file;
@@ -61,7 +60,7 @@ public class JSONCreator {
         object.put("start", start);
         File file = new File("theking/answer.json");
         FileWriter writer = new FileWriter(file);
-        writer.write(object.toJSONString());
+        writer.write(object.toString());
         writer.flush();
         writer.close();
         return file;
@@ -71,7 +70,7 @@ public class JSONCreator {
         object.put("error", false);
         File file = new File("theking/answer.json");
         FileWriter writer = new FileWriter(file);
-        writer.write(object.toJSONString());
+        writer.write(object.toString());
         writer.flush();
         writer.close();
         return file;
@@ -81,7 +80,7 @@ public class JSONCreator {
         object.put("error", true);
         File file = new File("theking/answer.json");
         FileWriter writer = new FileWriter(file);
-        writer.write(object.toJSONString());
+        writer.write(object.toString());
         writer.flush();
         writer.close();
         return file;
