@@ -55,7 +55,7 @@ public class GameServer {
     }
 
     public int addUser(String idOfRoom){
-        int index = idOfRoom.indexOf(idOfRoom);
+        int index = idOfRooms.indexOf(idOfRoom);
         Room room = rooms.get(index);
         int code = room.addUser();
         rooms.set(index, room);
