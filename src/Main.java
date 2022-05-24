@@ -1,4 +1,5 @@
 
+import com.google.gson.Gson;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -23,26 +24,32 @@ public class Main {
                         System.out.println(header);
                         if (header.startsWith("POST")){
                             String query = header.split(" ")[1].substring(1);
-                            String[] queries = query.split("/")[1].substring(5).split("&");
-                            String idOfRoom = queries[0].substring(3);
-                            int userCode = Integer.parseInt(queries[1].substring(10));
-                            int length = 0;
-                            String row = "";
-                            while (!(row = in.readLine()).equals("")){
-                                if (row.startsWith("Content-Length: ")){
-                                    length = Integer.parseInt(row.substring(16));
+                            if (query.startsWith("theking/data")){
+                                String[] queries = query.split("/")[1].substring(5).split("&");
+                                String idOfRoom = queries[0].substring(3);
+                                int userCode = Integer.parseInt(queries[1].substring(10));
+                                int length = 0;
+                                String row = "";
+                                while (!(row = in.readLine()).equals("")){
+                                    if (row.startsWith("Content-Length: ")){
+                                        length = Integer.parseInt(row.substring(16));
+                                    }
                                 }
+                                StringBuilder body = new StringBuilder();
+                                for (int i = 0; i < length; ++i){
+                                    int c = in.read();
+                                    body.append((char)c);
+                                }
+                                String bd = body.toString();
+                                bd = bd.replaceAll("%20", " ");
+                                bd = bd.replaceAll("%7B", "{");
+                                bd = bd.replaceAll("%7D", "}");
+                                bd = bd.replaceAll("%22", "\"");
+                                bd = bd.replaceAll("%3A", ":");
+                                bd = bd.replaceAll("%2C", ",");
+                                System.out.println(bd);
+                                postToServer(idOfRoom, userCode, print, bd.substring(5));
                             }
-                            StringBuilder body = new StringBuilder();
-                            for (int i = 0; i < length; ++i){
-                                int c = in.read();
-                                body.append((char)c);
-                            }
-                            String bd = body.toString();
-                            bd = bd.replaceAll("%20", " ");
-                            bd = bd.replaceAll("%7B", "{");
-                            bd = bd.replaceAll("%7D", "}");
-                            postToServer(idOfRoom, userCode, print, bd.substring(5));
                         }
                         else {
                             String query = header.split(" ")[1].substring(1);
@@ -79,17 +86,21 @@ public class Main {
                                             getRoomInform(idOfRoom, userCode, print);
                                         }
                                     }
+                                    if (query.startsWith("next")){
+                                        queries = query.substring(6).split("&");
+                                        if (queries.length == 2){
+                                            String idOfRoom = queries[0].substring(2);
+                                            int userCode = Integer.parseInt(queries[1].substring(10));
+                                            System.out.println("ID: " + idOfRoom + " user-code: " + userCode);
+                                            continueGame(idOfRoom, userCode, print);
+                                        }
+                                    }
                                 }
                             }
                             else if (query.startsWith("docs")){
                                 FileCreator creator = new FileCreator();
                                 File file = creator.createDocFile(gameServer);
                                 sendFile(file, print, "html", false);
-                            }
-                            else if (query.startsWith("data")){
-                                String[] queries = query.substring(5).split("&");
-                                String idOfRoom = queries[0].substring(3);
-                                //
                             }
                             else{
                                 FileCreator creator = new FileCreator(header);
@@ -116,12 +127,35 @@ public class Main {
             e.printStackTrace();
         }
     }
+    public static void continueGame(String idOfRoom, int userCode, PrintStream print){
+        JSONCreator creator = new JSONCreator();
+        try{
+            if (gameServer.isRightId(idOfRoom) && userCode < gameServer.getRoom(idOfRoom).users.size()){
+                File file = creator.getContinue(gameServer.getRoom(idOfRoom), userCode);
+                sendFile(file, print, "json", false);
+            }
+            else{
+                File file = creator.getError();
+                sendFile(file, print, "json", false);
+            }
+        } catch (Exception e){
+            System.out.println("continueGame");
+            e.printStackTrace();
+        }
+    }
 
     public static void postToServer(String idOfRoom, int userCode, PrintStream print, String json){
         JSONCreator creator = new JSONCreator();
         try{
             if (gameServer.isRightId(idOfRoom) && userCode < gameServer.getRoom(idOfRoom).users.size()){
-                // Обработка поста
+                if (!gameServer.getRoom(idOfRoom).users.get(userCode).readyToNext) {
+                    Gson gson = new Gson();
+                    Post post = gson.fromJson(json, Post.class);
+                    gameServer.setChanges(idOfRoom, userCode, post);
+                    if (gameServer.getRoom(idOfRoom).countOfReady == gameServer.getRoom(idOfRoom).users.size()){
+                        gameServer.nextWeek(idOfRoom);
+                    }
+                }
                 File file = creator.getOK();
                 sendFile(file, print, "json", false);
             }

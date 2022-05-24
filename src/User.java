@@ -3,6 +3,7 @@ public class User {
     boolean readyToStart;
     Country country;
     String name;
+    boolean readyToNext;
 
     public User(int code){
         this.code= code;

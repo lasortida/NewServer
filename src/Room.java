@@ -3,15 +3,32 @@ import java.util.ArrayList;
 public class Room {
     String id;
     boolean isGameStarted;
+    boolean isNextWeek;
     boolean isGameFull;
     ArrayList<User> users;
     Game game;
+    int countOfReady;
 
     public Room(String id){
         this.id = id;
         users = new ArrayList<>();
         isGameFull = false;
         isGameStarted = false;
+        countOfReady = 0;
+    }
+
+    public int[] findInvitationForCountry(int idOfCountry){
+        ArrayList<Integer> result = new ArrayList<>();
+        for (int i = 0; i < users.size(); ++i){
+            Alliance alliance = users.get(i).country.alliance;
+            if (alliance != null && alliance.idOfOwner == users.get(i).country.id){
+                if (alliance.invitationsFromMe.contains(idOfCountry)){
+                    result.add(users.get(i).country.id);
+                }
+            }
+        }
+        int[] idk = result.stream().mapToInt(Integer::intValue).toArray();
+        return idk;
     }
 
     public int addUser(){

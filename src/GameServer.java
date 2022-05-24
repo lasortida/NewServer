@@ -1,4 +1,3 @@
-import javax.sound.midi.MidiSystem;
 import java.util.ArrayList;
 
 public class GameServer {
@@ -13,6 +12,60 @@ public class GameServer {
         idOfRooms.add(id);
         System.out.println("Created Room: Sum = " + rooms.size());
     }
+
+    public void setChanges(String idOfRoom, int userCode, Post post){
+        int index = idOfRooms.indexOf(idOfRoom);
+        Room room = rooms.get(index);
+        User user = room.users.get(userCode);
+
+        user.country.moneyStatus = post.moneyStatus;
+        user.country.armyStatus = post.armyStatus;
+        user.country.businessStatus = post.businessStatus;
+        user.country.workerStatus = post.workerStatus;
+        user.country.foodStatus = post.foodStatus;
+
+        if (post.nameOfOwnAlliance != null){
+            user.country.alliance = new Alliance(post.nameOfOwnAlliance, user.country.id);
+        }
+        if (post.idOfOwnerAnotherCountry != -1){
+            for (int i = 0; i < room.users.size(); ++i){
+                User u = room.users.get(i);
+                if (u.country.id == post.idOfOwnerAnotherCountry){
+                    u.country.alliance.invitationsFromCountries.add(user.country.id);
+                    room.users.set(i, u);
+                    break;
+                }
+            }
+        }
+        if (post.myAllianceInvitation != -1){
+            user.country.alliance.invitationsFromMe.add(post.myAllianceInvitation);
+        }
+        if (post.tradeWith != -1){
+            for (int i = 0; i < room.users.size(); ++i){
+                User u = room.users.get(i);
+                if (u.country.id == post.tradeWith){
+                   u.country.offersFromCountries.add(user.country.id);
+                   u.country.states.put(post.stateDown, post.stateUp);
+                   room.users.set(i, u);
+                   break;
+                }
+            }
+        }
+
+        user.readyToNext = true;
+        room.countOfReady++;
+        room.users.set(userCode, user);
+        rooms.set(index, room);
+    }
+
+    public void nextWeek(String idOfRoom){
+        int index = idOfRooms.indexOf(idOfRoom);
+        Room room = rooms.get(index);
+        room.game.numberOfWeek++;
+        room.isNextWeek = true;
+        rooms.set(index, room);
+    }
+
     public String getIdOfRoom(){
         for(Room r: rooms){
             if (!r.isGameFull){
