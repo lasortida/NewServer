@@ -95,6 +95,12 @@ public class Main {
                                             continueGame(idOfRoom, userCode, print);
                                         }
                                     }
+                                    if (query.startsWith("clean")){
+                                        String key = query.substring(10);
+                                        if (key.equals("25052022")){
+                                            removeAllRooms();
+                                        }    
+                                    }
                                 }
                             }
                             else if (query.startsWith("docs")){
@@ -184,6 +190,10 @@ public class Main {
             System.out.println("getStartStatus");
             e.printStackTrace();
         }
+    }
+    
+    public static void removeAllRooms(){
+        gameServer = new GameServer();
     }
 
     public static void sendFile(File file, PrintStream print, String type, boolean error){
