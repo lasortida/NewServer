@@ -106,6 +106,7 @@ public class JSONCreator {
         writer.flush();
         writer.close();
         return file;
+    }
 
     public File getWaiting(boolean start, boolean error) throws Exception {
         object.put("error", error);
