@@ -272,7 +272,12 @@ public class Main {
             if (gameServer.isRightId(idOfRoom) && userCode < gameServer.getRoom(idOfRoom).users.size()){
                 int index = gameServer.idOfRooms.indexOf(idOfRoom);
                 Room room = gameServer.rooms.get(index);
-                file = creator.getGeneralData(room, userCode, false);
+                if (room.game.numberOfWeek == 1){
+                    file = creator.getGeneralData(room, userCode, false);
+                }
+                else{
+                    file = creator.getGeneralAndNext(gameServer, userCode);
+                }
             }
             else{
                 file = creator.getError();
