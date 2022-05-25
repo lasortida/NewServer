@@ -79,7 +79,7 @@ public class JSONCreator {
         return file;
     }
     
-    public File getGeneralAndNext(GameServer server, String idOfRoom, int userCode){
+    public File getGeneralAndNext(GameServer server, String idOfRoom, int userCode) throws Exception{
         Room room = server.getRoom(idOfRoom);
         object.put("id", room.id);
         object.put("start", room.isGameStarted);
