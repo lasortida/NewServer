@@ -286,7 +286,7 @@ public class Main {
                     file = creator.getGeneralData(room, userCode, false);
                 }
                 else{
-                    file = creator.getGeneralAndNext(gameServer, userCode);
+                    file = creator.getGeneralAndNext(gameServer, idOfRoom, userCode);
                 }
             }
             else{
