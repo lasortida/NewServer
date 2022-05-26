@@ -1,7 +1,5 @@
-import java.util.ArrayList;
 
 public class Game {
-    ArrayList<Mail> postOffice;
     int numberOfWeek;
     Country[] countries;
 
@@ -10,13 +8,13 @@ public class Game {
         countries = new Storage().countries;
     }
 
-    public Country getEmptyCountry(){
+    public int getEmptyCountry(){
         int value = (int)(Math.random() * countries.length);
         while(countries[value].occupied){
             value = (int)(Math.random() * countries.length);
         }
         countries[value].occupied = true;
-        return countries[value];
+        return value;
     }
 
 }

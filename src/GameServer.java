@@ -18,43 +18,36 @@ public class GameServer {
         Room room = rooms.get(index);
         User user = room.users.get(userCode);
 
-        user.country.moneyStatus = post.moneyStatus;
-        user.country.armyStatus = post.armyStatus;
-        user.country.businessStatus = post.businessStatus;
-        user.country.workerStatus = post.workerStatus;
-        user.country.foodStatus = post.foodStatus;
+        room.countries[user.idOfCountry].moneyStatus = post.moneyStatus;
+        room.countries[user.idOfCountry].armyStatus = post.armyStatus;
+        room.countries[user.idOfCountry].businessStatus = post.businessStatus;
+        room.countries[user.idOfCountry].workerStatus = post.workerStatus;
+        room.countries[user.idOfCountry].foodStatus = post.foodStatus;
 
-        if (post.nameOfOwnAlliance != null){
-            user.country.alliance = new Alliance(post.nameOfOwnAlliance, user.country.id);
-        }
-        if (post.idOfOwnerAnotherCountry != -1){
-            for (int i = 0; i < room.users.size(); ++i){
-                User u = room.users.get(i);
-                if (u.country.id == post.idOfOwnerAnotherCountry){
-                    u.country.alliance.invitationsFromCountries.add(user.country.id);
-                    room.users.set(i, u);
-                    break;
-                }
-            }
-        }
-        if (post.myAllianceInvitation != -1){
-            user.country.alliance.invitationsFromMe.add(post.myAllianceInvitation);
-        }
-        if (post.tradeWith != -1){
-            for (int i = 0; i < room.users.size(); ++i){
-                User u = room.users.get(i);
-                if (u.country.id == post.tradeWith){
-                   u.country.offersFromCountries.add(user.country.id);
-                   u.country.states.put(post.stateDown, post.stateUp);
-                   room.users.set(i, u);
-                   break;
-                }
-            }
+        room.countries[post.tradeWith].tradeWith.add(user.idOfCountry);
+        room.countries[post.tradeWith].tradeAway.add(post.tradeToMe);
+        room.countries[post.tradeWith].tradeToMe.add(post.tradeAway);
+
+        if (post.isTradeAccepted){
+            room.countries[post.confirmation].isTradeAccepted = true;
         }
 
         user.readyToNext = true;
         room.countOfReady++;
         room.users.set(userCode, user);
+        rooms.set(index, room);
+    }
+
+    public void pauseRoom(String idOfRoom){
+        int index = idOfRooms.indexOf(idOfRoom);
+        Room room = rooms.get(index);
+        room.countOfReady = 0;
+        room.isNextWeek = false;
+        for (int i = 0; i < room.users.size(); ++i){
+            User u = room.users.get(i);
+            u.readyToNext = false;
+            room.users.set(i, u);
+        }
         rooms.set(index, room);
     }
 
@@ -68,7 +61,7 @@ public class GameServer {
 
     public String getIdOfRoom(){
         for(Room r: rooms){
-            if (!r.isGameFull){
+            if (!r.isGameFull && !r.isGameStarted){
                 return r.id;
             }
         }

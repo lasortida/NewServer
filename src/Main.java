@@ -159,6 +159,21 @@ public class Main {
                     Post post = gson.fromJson(json, Post.class);
                     gameServer.setChanges(idOfRoom, userCode, post);
                     if (gameServer.getRoom(idOfRoom).countOfReady == gameServer.getRoom(idOfRoom).users.size()){
+                        Thread thread = new Thread(){
+                            @Override
+                            public void run() {
+                                while(true){
+                                    try {
+                                        Thread.sleep(2000);
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    break;
+                                }
+                                gameServer.pauseRoom(idOfRoom);
+                            }
+                        };
+                        thread.start();
                         gameServer.nextWeek(idOfRoom);
                     }
                 }
@@ -179,11 +194,11 @@ public class Main {
         JSONCreator creator = new JSONCreator();
         try {
             if (gameServer.isRightId(idOfRoom) && userCode < gameServer.getRoom(idOfRoom).users.size()){
-                File file = creator.getWaiting(gameServer.getRoom(idOfRoom).isGameStarted, false);
+                File file = creator.getWaiting(gameServer.getRoom(idOfRoom), false);
                 sendFile(file, printStream, "json", false);
             }
             else {
-                File file = creator.getWaiting(false, true);
+                File file = creator.getWaiting(null, true);
                 sendFile(file, printStream, "json", false);
             }
         } catch (Exception e){
@@ -282,12 +297,8 @@ public class Main {
             if (gameServer.isRightId(idOfRoom) && userCode < gameServer.getRoom(idOfRoom).users.size()){
                 int index = gameServer.idOfRooms.indexOf(idOfRoom);
                 Room room = gameServer.rooms.get(index);
-                if (room.game.numberOfWeek <= 1){
-                    file = creator.getGeneralData(room, userCode, false);
-                }
-                else{
-                    file = creator.getGeneralAndNext(gameServer, idOfRoom, userCode);
-                }
+                file = creator.getGeneralData(room, userCode, false);
+
             }
             else{
                 file = creator.getError();

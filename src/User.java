@@ -1,7 +1,7 @@
 public class User {
     int code;
     boolean readyToStart;
-    Country country;
+    int idOfCountry;
     String name;
     boolean readyToNext;
 

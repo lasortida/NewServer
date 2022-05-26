@@ -3,9 +3,12 @@ import java.util.ArrayList;
 public class Room {
     String id;
     boolean isGameStarted;
+    boolean timerStart;
+    int secondsReminder;
     boolean isNextWeek;
     boolean isGameFull;
     ArrayList<User> users;
+    Country[] countries;
     Game game;
     int countOfReady;
 
@@ -15,20 +18,7 @@ public class Room {
         isGameFull = false;
         isGameStarted = false;
         countOfReady = 0;
-    }
-
-    public int[] findInvitationForCountry(int idOfCountry){
-        ArrayList<Integer> result = new ArrayList<>();
-        for (int i = 0; i < users.size(); ++i){
-            Alliance alliance = users.get(i).country.alliance;
-            if (alliance != null && alliance.idOfOwner == users.get(i).country.id){
-                if (alliance.invitationsFromMe.contains(idOfCountry)){
-                    result.add(users.get(i).country.id);
-                }
-            }
-        }
-        int[] idk = result.stream().mapToInt(Integer::intValue).toArray();
-        return idk;
+        countries = new Storage().countries;
     }
 
     public int addUser(){
@@ -36,17 +26,37 @@ public class Room {
         int code = users.size();
         User user = new User(code);
         if (game != null){
-            user.country = game.getEmptyCountry();
+            user.idOfCountry = game.getEmptyCountry();
         }
         if (users.size() == 1){
-            game = new Game();
-            isGameStarted = true;
-            for (int i = 0; i < users.size(); ++i){
-                User u = users.get(i);
-                u.country = game.getEmptyCountry();
-                users.set(i, u);
-            }
-            user.country = game.getEmptyCountry();
+            timerStart = true;
+            secondsReminder = 15;
+            Thread thread = new Thread(){
+                @Override
+                public void run() {
+                    while (true){
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        secondsReminder--;
+                        if (secondsReminder == 0){
+                            break;
+                        }
+                    }
+                    game = new Game();
+                    isGameStarted = true;
+                    for (int i = 0; i < users.size(); ++i){
+                        User u = users.get(i);
+                        u.idOfCountry = game.getEmptyCountry();
+                        users.set(i, u);
+                    }
+                    user.idOfCountry = game.getEmptyCountry();
+                }
+            };
+
+            thread.start();
         }
         if (users.size() == 7){
             isGameFull = true;
@@ -70,7 +80,7 @@ public class Room {
     public int[] getUsers(){
         int[] result = new int[users.size()];
         for (int i = 0; i < users.size(); ++i){
-            result[i] = users.get(i).country.id;
+            result[i] = users.get(i).idOfCountry;
         }
         return result;
     }

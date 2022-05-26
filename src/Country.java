@@ -14,8 +14,10 @@ public class Country {
     double foodStatus;
 
     Alliance alliance;
-    ArrayList<Integer> offersFromCountries;
-    HashMap<Integer, Integer> states;
+    ArrayList<Integer> tradeWith;
+    ArrayList<Integer> tradeAway;
+    ArrayList<Integer> tradeToMe;
+    boolean isTradeAccepted;
 
     public Country(String title, int id){
         this.title = title;
@@ -26,22 +28,23 @@ public class Country {
         workerStatus = 0.5;
         foodStatus = 0.5;
         occupied = false;
-        offersFromCountries = new ArrayList<>();
-        states = new HashMap<>();
+        tradeWith = new ArrayList<>();
+        tradeAway = new ArrayList<>();
+        tradeToMe = new ArrayList<>();
     }
 
     public int[] getTrade(){
-        int[] result = offersFromCountries.stream().mapToInt(Integer::intValue).toArray();
+        int[] result = tradeWith.stream().mapToInt(Integer::intValue).toArray();
         return result;
     }
 
     public int[] getTradeAway(){
-        int[] result = states.keySet().stream().mapToInt(Integer::intValue).toArray();
+        int[] result = tradeAway.stream().mapToInt(Integer::intValue).toArray();
         return result;
     }
 
     public int[] getTradeToMe(){
-        int[] result = states.values().stream().mapToInt(Integer::intValue).toArray();
+        int[] result = tradeToMe.stream().mapToInt(Integer::intValue).toArray();
         return result;
     }
 }
