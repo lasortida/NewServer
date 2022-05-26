@@ -164,7 +164,7 @@ public class Main {
                             public void run() {
                                 while(true){
                                     try {
-                                        Thread.sleep(2000);
+                                        Thread.sleep(6000);
                                     } catch (InterruptedException e) {
                                         throw new RuntimeException(e);
                                     }

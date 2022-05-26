@@ -24,9 +24,11 @@ public class GameServer {
         room.countries[user.idOfCountry].workerStatus = post.workerStatus;
         room.countries[user.idOfCountry].foodStatus = post.foodStatus;
 
-        room.countries[post.tradeWith].tradeWith.add(user.idOfCountry);
-        room.countries[post.tradeWith].tradeAway.add(post.tradeToMe);
-        room.countries[post.tradeWith].tradeToMe.add(post.tradeAway);
+        if (post.tradeWith != -1){
+            room.countries[post.tradeWith].tradeWith.add(user.idOfCountry);
+            room.countries[post.tradeWith].tradeAway.add(post.tradeToMe);
+            room.countries[post.tradeWith].tradeToMe.add(post.tradeAway);
+        }
 
         if (post.isTradeAccepted){
             room.countries[post.confirmation].isTradeAccepted = true;
@@ -47,6 +49,12 @@ public class GameServer {
             User u = room.users.get(i);
             u.readyToNext = false;
             room.users.set(i, u);
+        }
+        for (int i = 0; i < room.countries.length; ++i){
+            room.countries[i].tradeWith = new ArrayList<>();
+            room.countries[i].tradeAway = new ArrayList<>();
+            room.countries[i].tradeToMe = new ArrayList<>();
+            room.countries[i].isTradeAccepted = false;
         }
         rooms.set(index, room);
     }
