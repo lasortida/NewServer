@@ -9,8 +9,11 @@ public class Room {
     boolean isGameFull;
     ArrayList<User> users;
     Country[] countries;
+    ArrayList<Alliance> alliances;
     Game game;
     int countOfReady;
+    ArrayList<Integer> idsOfAlliance;
+    ArrayList<Integer> idsOfCountry;
 
     public Room(String id){
         this.id = id;
@@ -19,6 +22,67 @@ public class Room {
         isGameStarted = false;
         countOfReady = 0;
         countries = new Storage().countries;
+        alliances = new ArrayList<>();
+        idsOfAlliance = new ArrayList<>();
+        idsOfCountry = new ArrayList<>();
+    }
+
+    public int[] getIdsOfAlliance(){
+        return idsOfAlliance.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    public int[] getIdsOfCountry(){
+        return idsOfCountry.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    public String[] getNewNameAlliance(){
+        ArrayList<String> strings = new ArrayList<>();
+        for (int i = 0; i < alliances.size(); ++i){
+            if (alliances.get(i).isNew){
+                strings.add(alliances.get(i).name);
+            }
+        }
+        return strings.toArray(new String[0]);
+    }
+
+    public int[] getNewAlliancesIds(){
+        ArrayList<Integer> res = new ArrayList<>();
+        for (int i = 0; i < alliances.size(); ++i){
+            if (alliances.get(i).isNew){
+                res.add(alliances.get(i).idOfAlliance);
+            }
+        }
+        return res.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    public int[] getNewAlliancesIdsOfOwner(){
+        ArrayList<Integer> res = new ArrayList<>();
+        for (int i = 0; i < alliances.size(); ++i){
+            if (alliances.get(i).isNew){
+                res.add(alliances.get(i).idOfOwner);
+            }
+        }
+        return res.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    public int[] getNewAlliancesAvatars(){
+        ArrayList<Integer> res = new ArrayList<>();
+        for (int i = 0; i < alliances.size(); ++i){
+            if (alliances.get(i).isNew){
+                res.add(alliances.get(i).avatar);
+            }
+        }
+        return res.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    public String[] getNewAlliancesDescription(){
+        ArrayList<String> strings = new ArrayList<>();
+        for (int i = 0; i < alliances.size(); ++i){
+            if (alliances.get(i).isNew){
+                strings.add(alliances.get(i).description);
+            }
+        }
+        return strings.toArray(new String[0]);
     }
 
     public int addUser(){

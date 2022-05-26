@@ -67,6 +67,20 @@ public class JSONCreator {
         object.put("tradeAway", room.countries[room.users.get(userCode).idOfCountry].getTradeAway());
         object.put("tradeToMe", room.countries[room.users.get(userCode).idOfCountry].getTradeToMe());
         object.put("isTradeAccepted", room.countries[room.users.get(userCode).idOfCountry].isTradeAccepted);
+        object.put("newAllianceNames", room.getNewNameAlliance());
+        object.put("newAllianceIds", room.getNewAlliancesIds());
+        object.put("newAllianceIdsOfOwner", room.getNewAlliancesIdsOfOwner());
+        object.put("newAllianceAvatars", room.getNewAlliancesAvatars());
+        object.put("newAllianceDescription", room.getNewAlliancesDescription());
+        object.put("offersFromAlliances", room.countries[room.users.get(userCode).idOfCountry].getOffersFromAlliances());
+        object.put("newIdsOfCountry", room.getIdsOfCountry());
+        object.put("newIdsOfAlliance", room.getIdsOfAlliance());
+        if (room.users.size() == 1){
+            object.put("win", true);
+        }
+        else{
+            object.put("win", false);
+        }
         File file = new File("theking/answer.json");
         FileWriter writer = new FileWriter(file);
         writer.write(object.toString());

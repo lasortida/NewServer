@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
 
 public class Country {
     String title;
@@ -13,7 +11,8 @@ public class Country {
     double workerStatus;
     double foodStatus;
 
-    Alliance alliance;
+    int idOfAlliance = -1;
+    ArrayList<Integer> offerFromAlliance;
     ArrayList<Integer> tradeWith;
     ArrayList<Integer> tradeAway;
     ArrayList<Integer> tradeToMe;
@@ -31,6 +30,15 @@ public class Country {
         tradeWith = new ArrayList<>();
         tradeAway = new ArrayList<>();
         tradeToMe = new ArrayList<>();
+        offerFromAlliance = new ArrayList<>();
+    }
+
+    public int[] getOffersFromAlliances(){
+        int[] result = new int[offerFromAlliance.size()];
+        for (int i = 0; i < result.length; ++i){
+            result[i] = offerFromAlliance.get(i);
+        }
+        return result;
     }
 
     public int[] getTrade(){

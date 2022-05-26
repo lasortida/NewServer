@@ -30,8 +30,40 @@ public class GameServer {
             room.countries[post.tradeWith].tradeToMe.add(post.tradeAway);
         }
 
-        if (post.isTradeAccepted){
-            room.countries[post.confirmation].isTradeAccepted = true;
+        if (post.isTradeAccepted != null && post.isTradeAccepted.length != 0){
+            for (int i = 0; i < post.isTradeAccepted.length; ++i){
+                room.countries[post.confirmation[i]].isTradeAccepted = post.isTradeAccepted[i];
+            }
+        }
+
+        if (post.isOfferAccepted != null && post.isOfferAccepted.length != 0){
+            for (int i = 0; i < post.isOfferAccepted.length; ++i){
+                if (post.isOfferAccepted[i]){
+                    Alliance alliance = room.alliances.get(post.allianceIdConfirmation[i]);
+                    int idOfCountry = room.users.get(userCode).idOfCountry;
+                    alliance.countries.add(idOfCountry);
+                    room.idsOfCountry.add(idOfCountry);
+                    room.idsOfAlliance.add(alliance.idOfAlliance);
+                    room.alliances.set(post.allianceIdConfirmation[i], alliance);
+                    room.countries[idOfCountry].idOfAlliance = post.allianceIdConfirmation[i];
+                }
+            }
+        }
+
+        if (post.nameOfNewAlliance != null){
+            Alliance alliance = new Alliance(post.nameOfNewAlliance, room.users.get(userCode).idOfCountry, post.description, post.avatar);
+            int idOfAlliance = room.alliances.size();
+            alliance.idOfAlliance = idOfAlliance;
+            room.countries[room.users.get(userCode).idOfCountry].idOfAlliance = idOfAlliance;
+            room.alliances.add(alliance);
+        }
+
+        if (post.idOfCountryOffer != -1){
+            int idOfAlliance = room.countries[room.users.get(userCode).idOfCountry].idOfAlliance;
+            room.countries[post.idOfCountryOffer].offerFromAlliance.add(idOfAlliance);
+        }
+        if (post.end){
+            room.users.remove(userCode);
         }
 
         user.readyToNext = true;
@@ -45,6 +77,8 @@ public class GameServer {
         Room room = rooms.get(index);
         room.countOfReady = 0;
         room.isNextWeek = false;
+        room.idsOfAlliance = new ArrayList<>();
+        room.idsOfCountry = new ArrayList<>();
         for (int i = 0; i < room.users.size(); ++i){
             User u = room.users.get(i);
             u.readyToNext = false;
@@ -55,7 +89,14 @@ public class GameServer {
             room.countries[i].tradeAway = new ArrayList<>();
             room.countries[i].tradeToMe = new ArrayList<>();
             room.countries[i].isTradeAccepted = false;
+            room.countries[i].offerFromAlliance = new ArrayList<>();
         }
+        for (int i = 0; i < room.alliances.size(); ++i){
+            Alliance alliance = room.alliances.get(i);
+            alliance.isNew = false;
+            room.alliances.set(i, alliance);
+        }
+
         rooms.set(index, room);
     }
 

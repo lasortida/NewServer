@@ -47,6 +47,15 @@ public class Main {
                                 bd = bd.replaceAll("%22", "\"");
                                 bd = bd.replaceAll("%3A", ":");
                                 bd = bd.replaceAll("%2C", ",");
+                                bd = bd.replaceAll("%5B", "[");
+                                bd = bd.replaceAll("%5D", "]");
+                                bd = bd.replaceAll("%21", "!");
+                                bd = bd.replaceAll("%27", "'");
+                                bd = bd.replaceAll("%24", "$");
+                                bd = bd.replaceAll("%3D", "=");
+                                bd = bd.replaceAll("%25", "%");
+                                bd = bd.replaceAll("%40", "@");
+                                bd = bd.replaceAll("%3F", "?");
                                 System.out.println(bd);
                                 postToServer(idOfRoom, userCode, print, bd.substring(5));
                             }
@@ -156,6 +165,7 @@ public class Main {
             if (gameServer.isRightId(idOfRoom) && userCode < gameServer.getRoom(idOfRoom).users.size()){
                 if (!gameServer.getRoom(idOfRoom).users.get(userCode).readyToNext) {
                     Gson gson = new Gson();
+
                     Post post = gson.fromJson(json, Post.class);
                     gameServer.setChanges(idOfRoom, userCode, post);
                     if (gameServer.getRoom(idOfRoom).countOfReady == gameServer.getRoom(idOfRoom).users.size()){

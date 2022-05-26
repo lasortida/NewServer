@@ -8,6 +8,16 @@ public class Post {
     public int tradeWith;
     public int tradeAway;
     public int tradeToMe;
-    public boolean isTradeAccepted;
-    public int confirmation;
+    public boolean[] isTradeAccepted;
+    public int[] confirmation;
+
+    public String nameOfNewAlliance;
+    public String description;
+    public int avatar;
+
+    public int idOfCountryOffer;
+
+    public boolean[] isOfferAccepted;
+    public int[] allianceIdConfirmation;
+    public boolean end;
 }
