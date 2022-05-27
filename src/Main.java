@@ -165,7 +165,6 @@ public class Main {
             if (gameServer.isRightId(idOfRoom) && userCode < gameServer.getRoom(idOfRoom).users.size()){
                 if (!gameServer.getRoom(idOfRoom).users.get(userCode).readyToNext) {
                     Gson gson = new Gson();
-
                     Post post = gson.fromJson(json, Post.class);
                     gameServer.setChanges(idOfRoom, userCode, post);
 

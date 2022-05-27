@@ -1,3 +1,4 @@
+import javax.sound.midi.MidiSystem;
 import java.util.ArrayList;
 
 public class GameServer {
@@ -63,25 +64,23 @@ public class GameServer {
             room.countries[post.idOfCountryOffer].offerFromAlliance.add(idOfAlliance);
         }
         if (post.end){
-            room.users.remove(userCode);
+            room.idsOfLoser.add(userCode);
         }
 
         user.readyToNext = true;
         room.countOfReady++;
 
-        if (room.countOfReady == room.users.size()){
+        if (room.countOfReady == room.currentPlayers){
             Thread thread = new Thread(){
                 @Override
                 public void run() {
-                    while(true){
-                        try {
-                            Thread.sleep(6000);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                        pauseRoom(idOfRoom);
-                        break;
+                    try {
+                        Thread.sleep(6000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
+                    pauseRoom(idOfRoom);
+                    System.out.println("DATA CLEANED!");
                 }
             };
             thread.start();
@@ -103,6 +102,15 @@ public class GameServer {
             u.readyToNext = false;
             room.users.set(i, u);
         }
+        for (int i = 0; i < room.idsOfLoser.size(); ++i){
+            room.users.set(room.idsOfLoser.get(i), null);
+        }
+        room.currentPlayers = 0;
+        for (int i = 0; i < room.users.size(); ++i){
+            if (room.users.get(i) != null){
+                room.currentPlayers++;
+            }
+        }
         for (int i = 0; i < room.countries.length; ++i){
             room.countries[i].tradeWith = new ArrayList<>();
             room.countries[i].tradeAway = new ArrayList<>();
@@ -115,6 +123,7 @@ public class GameServer {
             alliance.isNew = false;
             room.alliances.set(i, alliance);
         }
+        room.idsOfLoser = new ArrayList<>();
 
         rooms.set(index, room);
     }

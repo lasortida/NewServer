@@ -1,4 +1,4 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-</head><h1>The King</h1><h1>My application</h1><h2>Список комнат: </h2><h3 style="margin-top: 3%">ID: O24OO7</h3><h3>Игроков: 8</h3><h3>Игра запущена: true</h3><h3 style="margin-top: 3%">ID: 8195AL</h3><h3>Игроков: 8</h3><h3>Игра запущена: true</h3>
+</head><h1>The King</h1><h1>My application</h1><h2>Список комнат: </h2><h3 style="margin-top: 3%">ID: 3XNI9N</h3><h3>Игроков: 3</h3><h3>Игра запущена: true</h3><h3 style="margin-top: 3%">ID: V3FI3G</h3><h3>Игроков: 2</h3><h3>Игра запущена: true</h3><h3 style="margin-top: 3%">ID: 52BYN7</h3><h3>Игроков: 2</h3><h3>Игра запущена: true</h3><h3 style="margin-top: 3%">ID: TH4O6W</h3><h3>Игроков: 2</h3><h3>Игра запущена: true</h3><h3 style="margin-top: 3%">ID: DCT6OG</h3><h3>Игроков: 2</h3><h3>Игра запущена: true</h3><h3 style="margin-top: 3%">ID: 5O3195</h3><h3>Игроков: 3</h3><h3>Игра запущена: true</h3><h3 style="margin-top: 3%">ID: 6G577H</h3><h3>Игроков: 1</h3><h3>Игра запущена: false</h3>

@@ -14,6 +14,8 @@ public class Room {
     int countOfReady;
     ArrayList<Integer> idsOfAlliance;
     ArrayList<Integer> idsOfCountry;
+    ArrayList<Integer> idsOfLoser;
+    int currentPlayers = 0;
 
     public Room(String id){
         this.id = id;
@@ -25,6 +27,7 @@ public class Room {
         alliances = new ArrayList<>();
         idsOfAlliance = new ArrayList<>();
         idsOfCountry = new ArrayList<>();
+        idsOfLoser = new ArrayList<>();
     }
 
     public int[] getIdsOfAlliance(){
@@ -89,6 +92,7 @@ public class Room {
         System.out.println("Added one person");
         int code = users.size();
         User user = new User(code);
+        currentPlayers++;
         if (game != null){
             user.idOfCountry = game.getEmptyCountry();
         }
