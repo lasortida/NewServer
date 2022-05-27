@@ -11,7 +11,7 @@ public class Main {
         gameServer = new GameServer();
         System.out.println("Server start!");
         try{
-            ServerSocket serverSocket = new ServerSocket(80);
+            ServerSocket serverSocket = new ServerSocket(4444);
             Socket socket = null;
             while (true){
                 try {
@@ -168,24 +168,7 @@ public class Main {
 
                     Post post = gson.fromJson(json, Post.class);
                     gameServer.setChanges(idOfRoom, userCode, post);
-                    if (gameServer.getRoom(idOfRoom).countOfReady == gameServer.getRoom(idOfRoom).users.size()){
-                        Thread thread = new Thread(){
-                            @Override
-                            public void run() {
-                                while(true){
-                                    try {
-                                        Thread.sleep(6000);
-                                    } catch (InterruptedException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                    break;
-                                }
-                                gameServer.pauseRoom(idOfRoom);
-                            }
-                        };
-                        thread.start();
-                        gameServer.nextWeek(idOfRoom);
-                    }
+
                 }
                 File file = creator.getOK();
                 sendFile(file, print, "json", false);

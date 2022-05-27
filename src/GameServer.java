@@ -68,6 +68,25 @@ public class GameServer {
 
         user.readyToNext = true;
         room.countOfReady++;
+
+        if (room.countOfReady == room.users.size()){
+            Thread thread = new Thread(){
+                @Override
+                public void run() {
+                    while(true){
+                        try {
+                            Thread.sleep(6000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        pauseRoom(idOfRoom);
+                        break;
+                    }
+                }
+            };
+            thread.start();
+            nextWeek(idOfRoom);
+        }
         room.users.set(userCode, user);
         rooms.set(index, room);
     }
