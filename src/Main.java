@@ -11,7 +11,7 @@ public class Main {
         gameServer = new GameServer();
         System.out.println("Server start!");
         try{
-            ServerSocket serverSocket = new ServerSocket(4444);
+            ServerSocket serverSocket = new ServerSocket(80);
             Socket socket = null;
             while (true){
                 try {
